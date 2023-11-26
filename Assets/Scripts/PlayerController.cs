@@ -50,15 +50,14 @@ public class PlayerController : MonoBehaviour
     private float groundCheckDist;
     private float bufferCheckDist;
 
+    private RaycastHit slopeHit;
+
     private bool inWind;
     private float windDimTotal;
     private Vector3 windDir;
 
     private Vector2 moveVector;
     private float height;
-
-    private float fallTimer;
-    private float fallLimit;
 
     private bool inLight;
     private float prevIntensity;
@@ -77,8 +76,6 @@ public class PlayerController : MonoBehaviour
         windDimTotal = 0;
 
         inLight = false;
-
-        fallLimit = 2.0f;
 
         isGrounded = true;
         bufferCheckDist = 0.1f;
@@ -119,7 +116,14 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics.Raycast(transform.position,-transform.up, out hit, groundCheckDist);
         Vector3 moveDir = new Vector3(moveVector.x * moveSpeed, 0.0f, moveVector.y * moveSpeed);
         moveDir = transform.TransformDirection(moveDir);
-        rb.AddForce(moveDir * rb.mass);
+        if (OnSlope(transform.localScale.y * 0.5f))
+        {
+            rb.AddForce(GetSlopeDirection(moveDir) * rb.mass);
+        }
+        else
+        {
+            rb.AddForce(moveDir * rb.mass);
+        }
         if (Math.Abs(rb.velocity.x) > limitSpeed)
         {
             rb.velocity = new Vector3(rb.velocity.x < 0 ? -limitSpeed : limitSpeed, rb.velocity.y, rb.velocity.z);
@@ -128,16 +132,8 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z < 0 ? -limitSpeed : limitSpeed);
         }
-        if (rb.velocity.y < -0.01f)
-        {
-            fallTimer += Time.deltaTime;
-        }
-        else
-        {
-            fallTimer = 0.0f;
-        }
 
-        if (fallTimer > fallLimit)
+        if (transform.position.y<-1)
         {
             Fall();
         }
@@ -156,6 +152,20 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool OnSlope(float checkDist)
+    {
+        if (Physics.Raycast(transform.position, -transform.up, out slopeHit, checkDist + 1f)){
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle != 0;
+        }
+        return false;
+    }
+
+    private Vector3 GetSlopeDirection(Vector3 moveDir)
+    {
+        return Vector3.ProjectOnPlane(moveDir, slopeHit.normal);
     }
 
     private bool Burn()
@@ -284,6 +294,20 @@ public class PlayerController : MonoBehaviour
             inWind = true;
             windDimTotal = 0;
             windDir = other.GetComponent<WindSourceInfo>().GetDir();
+        }
+
+        if (other.tag == "Narration")
+        {
+            //AudioClip line = other.GetComponent<Narration>().narration;
+            oneShotPlayer.PlayOneShot(other.GetComponent<Narration>().narration, 1.5f);
+            Destroy(other.gameObject);
+            /**
+            if (line != null)
+            {
+                oneShotPlayer.PlayOneShot(line);
+                line = null;
+            }
+            **/
         }
 
         if (other.tag == "Interactable")

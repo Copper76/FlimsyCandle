@@ -56,7 +56,7 @@ public class StrayCandleInteracter : InteractController
     public override void Reset() 
     {
         offered = false;
-        if (alive)
+        if (alive && promptAudio == null)
         {
             promptText = "PRESS 'E' TO SHARE YOUR LIGHT";
             promptAudio = secondContactClip;

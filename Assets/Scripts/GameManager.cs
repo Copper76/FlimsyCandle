@@ -86,6 +86,10 @@ public class GameManager : MonoBehaviour
         {
             fuel.gameObject.SetActive(true);
         }
+        foreach (Transform t in NPCs)
+        {
+            t.GetComponent<InteractController>().Reset();
+        }
     }
 
     private void SpawnPlayer()
@@ -99,10 +103,6 @@ public class GameManager : MonoBehaviour
         player.GetComponent<PlayerController>().cam = cam;
         int clip = UnityEngine.Random.Range(0, clipDepot.beginClips.Length);
         oneShotPlayer.PlayOneShot(clipDepot.beginClips[clip]);
-        foreach (Transform t in NPCs)
-        {
-            t.GetComponent<InteractController>().Reset();
-        }
     }
 
     public void UpdateSpawnPoint(int lampNum, Vector3 spawnPos)
@@ -130,5 +130,14 @@ public class GameManager : MonoBehaviour
         previousCandle.GetChild(0).GetChild(1).GetChild(0).gameObject.SetActive(false);
         previousCandle.GetChild(0).GetChild(1).GetChild(1).gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void KillLights()
+    {
+        foreach (Transform fuel in fuelHolder)
+        {
+            fuel.gameObject.SetActive(false);
+        }
+
     }
 }

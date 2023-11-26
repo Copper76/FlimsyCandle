@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    [SerializeField] GameManager manager;
+
     private float optimalDist;
     private float targetDist;
     private Transform cameraObject;
@@ -104,5 +106,6 @@ public class CameraController : MonoBehaviour
     public void VictoryRotate()
     {
         ended = true;
+        manager.KillLights();
     }
 }

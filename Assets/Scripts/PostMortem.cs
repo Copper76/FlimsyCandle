@@ -21,10 +21,7 @@ public class PostMortem : MonoBehaviour
 
         if (rb.velocity.y == 0)
         {
-            foreach (Collider col in transform.GetChild(0).GetChild(0).GetComponents<Collider>())
-            {
-                col.enabled = false;
-            }
+            Destroy(transform.GetChild(0).GetChild(0).gameObject);
             rb.velocity = Vector3.zero;
             rb.useGravity = false;
             Destroy(this);
