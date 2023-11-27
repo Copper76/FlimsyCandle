@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
             fuel.transform.position = pos;
         }
         Cursor.lockState = CursorLockMode.None;
+        burnSource.Play();
     }
 
     void Start()
@@ -130,6 +131,7 @@ public class GameManager : MonoBehaviour
         previousCandle.GetChild(0).GetChild(1).GetChild(0).gameObject.SetActive(false);
         previousCandle.GetChild(0).GetChild(1).GetChild(1).gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
+        burnSource.Stop();
     }
 
     public void KillLights()

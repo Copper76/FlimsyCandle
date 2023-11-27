@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     private Light candleLight;
     private ParticleSystem ps;
 
-    private float horizontalSens = 10.0f;
+    private float horizontalSens = 5.0f;
     private float verticalSens = 5.0f;
     private float verticalRotationMinimum = 0f;
     private float verticalRotationMaximum = 60f;
